@@ -89,7 +89,7 @@ def get_farming_reward(user_data, token):
         return None
     
 def get_ref_reward(user_data, token):
-    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/point/reward'
+    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/point/invite/balance'
     headers['Authorization'] = token
     payload = {"uid": user_data["id"]}
 
@@ -105,7 +105,7 @@ def get_ref_reward(user_data, token):
         return None
 
 def claim_ref_reward(user_data, token):
-    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/point/invite/balance'
+    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/point/invite/claim'
     headers['Authorization'] = token
     payload = {"uid": user_data["id"]}
 
@@ -299,7 +299,7 @@ def convert_ts(seconds):
 def main():
     auto_clear_task = input("Auto clear and claim Task? (y/n): ").strip().upper()
     auto_play_game = input("Auto play game? (y/n): ").strip().upper()
-
+  
     if auto_play_game == "Y":
         print(Fore.YELLOW + Style.BRIGHT + f"Select Score: ")
         print(Fore.YELLOW + Style.BRIGHT + f"1. Default Score")
@@ -314,8 +314,9 @@ def main():
                     print(Fore.RED + Style.BRIGHT + "Masukan harus antara 1 dan 3.")
             except ValueError:
                 print(Fore.RED + Style.BRIGHT + "Masukan harus berupa angka.")
-       
+
     while True:
+
         print_welcome_message()
         try:
             for line, user_data in user_data_list:
@@ -486,8 +487,12 @@ def main():
             print(Fore.BLUE + Style.BRIGHT + f"\n==========SEMUA AKUN TELAH DIPROSES==========\n", flush=True)
             animated_loading(300)
         except Exception as e:
-            time.sleep(5)
+            
             print(f"An error occurred: {str(e)}")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            print(f"\n{Fore.RED+Style.BRIGHT}Proses dihentikan paksa oleh anda!")
+            break
 
 
 def print_welcome_message():
