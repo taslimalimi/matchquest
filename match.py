@@ -12,13 +12,12 @@ def parse_user_data(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for line in lines:
-            if line.startswith("user="):
-                user_data_encoded = line.split('&')[0].split('=')[1]
+            if "user=" in line:
+                user_data_encoded = line.split('user=')[1].split('&')[0]
                 user_data_json = urllib.parse.unquote(user_data_encoded)
                 user_data = json.loads(user_data_json)
                 user_data_list.append((line.strip(), user_data))
     return user_data_list
-
 headers = {
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'en-US,en;q=0.9',
