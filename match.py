@@ -248,6 +248,42 @@ def claim_game(game_id,point, token):
     except requests.RequestException as e:
         print(f"Request Error: {e}")
         return None
+    
+def buy_tiket(token,user_id):
+    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/daily/task/purchase'
+    headers['Authorization'] = token
+    payload = {
+        "uid": user_id,
+        "type": "game"
+    }
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response.json()
+    except json.JSONDecodeError:
+        print(f"JSON Decode Error: Token Invalid")
+        return None
+    except requests.RequestException as e:
+        print(f"Request Error: {e}")
+        return None
+def buy_booster(token,user_id):
+    url = 'https://tgapp-api.matchain.io/api/tgapp/v1/daily/task/purchase'
+    headers['Authorization'] = token
+    payload = {
+        "uid": user_id,
+        "type": "daily"
+    }
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response.json()
+    except json.JSONDecodeError:
+        print(f"JSON Decode Error: Token Invalid")
+        return None
+    except requests.RequestException as e:
+        print(f"Request Error: {e}")
+        return None
+
 
 def calculate_default_score(rule):
     big_fire_count = 0
@@ -424,6 +460,31 @@ def main():
                                             print(f"{Fore.RED+Style.BRIGHT}[ Task ]: Failed to finishing {task['name']}            ", flush=True)
                             else:
                                 print(f"{Fore.RED+Style.BRIGHT}[ Task ]: Failed Get List Task          ", flush=True)
+                        
+                        print(Fore.CYAN + Style.BRIGHT + f"[ Daily Booster ]: Checking..", end="\r", flush=True)
+                        time.sleep(2)
+                        booster = buy_booster(token,user_data['id'])
+                        if booster:
+                            if booster['code'] == 200:
+                                msg = booster['msg']
+                                print(Fore.CYAN + Style.BRIGHT + f"[ Daily Booster ]: {msg}                 ", flush=True)
+                            elif booster['code'] == 400:
+                                msg = booster['msg']
+                                print(Fore.YELLOW + Style.BRIGHT + f"[ Daily Booster ]: {msg}                 ", flush=True)
+                            else:
+                                print(Fore.RED + Style.BRIGHT + f"[ Daily Booster ]: Failed to buy booster            ", flush=True)
+                        print(Fore.CYAN + Style.BRIGHT + f"[ Game Booster ]: Checking..", end="\r", flush=True)
+                        time.sleep(2)
+                        game_tiket = buy_tiket(token,user_data['id'])
+                        if game_tiket:
+                            if game_tiket['code'] == 200:
+                                msg = game_tiket['msg']
+                                print(Fore.CYAN + Style.BRIGHT + f"[ Game Booster ]: {msg}                 ", flush=True)
+                            elif game_tiket['code'] == 400:
+                                msg = game_tiket['msg']
+                                print(Fore.YELLOW + Style.BRIGHT + f"[ Game Booster ]: {msg}                 ", flush=True)
+                            else:
+                                print(Fore.RED + Style.BRIGHT + f"[ Game Booster ]: Failed to buy booster            ", flush=True)
                         print(Fore.GREEN + Style.BRIGHT + f"[ Game ]: Checking ticket..", end="\r", flush=True)
                         time.sleep(2)
                         tiket_response = check_tiket(token)
